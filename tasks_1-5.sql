@@ -29,7 +29,7 @@ GROUP BY category;
 SELECT 
     c.course_id, 
     c.course_name, 
-    AVG(p.score) AS average_rating
+    AVG(p.score) AS average_score
 FROM progress p
 JOIN enrollments e ON e.enrollment_id = p.enrollment_id
 JOIN courses c ON c.course_id = e.course_id
@@ -39,7 +39,15 @@ GROUP BY c.course_id;
 ## **Задача 3. JOIN‑аналіз**
 
 1. Вивести список курсів разом з іменами викладачів.
-![](task3_1.png)
+
+SELECT 
+    c.course_id, 
+    c.course_name, 
+    c.instructor_id,
+    i.full_name
+FROM courses c
+JOIN instructors i ON c.instructor_id = i.instructor_id;
+
 2. Вивести студентів та назви курсів, на які вони записані.
 ![](task3_2.png)
 3. Порахувати, скільки студентів у кожного викладача.
