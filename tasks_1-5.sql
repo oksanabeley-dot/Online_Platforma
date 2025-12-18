@@ -10,7 +10,9 @@ WHERE reg_date > '2024.01.01';
 
 
 2. Вивести всі курси категорії `"Data Science"`.
-![](task1_2.png)
+SELECT course_id, course_name, category 
+FROM courses
+WHERE category = 'Data Science';
 
 ## **Задача 2. Групування та агрегація**
 
