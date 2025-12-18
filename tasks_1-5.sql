@@ -17,11 +17,24 @@ WHERE category = 'Data Science';
 ## **Задача 2. Групування та агрегація**
 
 1. Порахувати кількість студентів у кожному місті.
-![](task2_1.png)
+SELECT city, COUNT(*) AS student_count FROM students
+GROUP BY city;
+
 2. Порахувати кількість курсів у кожній категорії.
-![](task2_2.png)
+SELECT category, COUNT(*) AS course_count FROM courses
+GROUP BY category;
+
+
 3. Порахувати середню оцінку по кожному курсу.
-![](task2_3.png)
+SELECT 
+    c.course_id, 
+    c.course_name, 
+    AVG(p.score) AS average_rating
+FROM progress p
+JOIN enrollments e ON e.enrollment_id = p.enrollment_id
+JOIN courses c ON c.course_id = e.course_id
+GROUP BY c.course_id;
+
 
 ## **Задача 3. JOIN‑аналіз**
 
@@ -37,6 +50,15 @@ WHERE category = 'Data Science';
 1. Порахувати середню оцінку кожного студента.
 ![](task4_1.png)
 2. Порахувати відсоток завершених уроків для кожного курсу.
+SELECT 
+    c.course_id,
+    c.course_name,
+    AVG(CASE WHEN sc.status = 'completed' THEN 1 ELSE 0 END) * 100.0 / COUNT(l.lesson_id) AS completion_percentage
+FROM 
+    courses c
+JOIN lessons l ON c.course_id = l.course_id
+LEFT JOIN student_courses sc ON c.course_id
+
 
 3. Знайти студентів, які завершили всі уроки у своїх курсах.
 
@@ -45,4 +67,14 @@ WHERE category = 'Data Science';
 
 1. Для кожного курсу визначити рейтинг студентів за середнім балом.
 
-2. Порахувати кумулятивну кількість уроків, завершених студентом у хронологічн
+2. Порахувати кумулятивну кількість уроків, завершених студентом у хронологічному порядку.
+SELECT 
+    sc.student_id,
+    c.course_id,
+    AVG(sc.score) AS average_score,
+    RANK() OVER (PARTITION BY c.course_id ORDER BY AVG(sc.score) DESC) AS student_rank
+FROM 
+    student_courses sc
+JOIN courses c ON sc.course_id = c.course_id
+GROUP BY 
+    sc.student_id, c.course_id;
