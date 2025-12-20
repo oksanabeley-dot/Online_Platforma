@@ -49,9 +49,17 @@ FROM courses c
 JOIN instructors i ON c.instructor_id = i.instructor_id;
 
 2. Вивести студентів та назви курсів, на які вони записані.
-![](task3_2.png)
+SELECT s.student_id, s.full_name, c.course_name
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN courses c ON e.course_id = c.course_id;
+
 3. Порахувати, скільки студентів у кожного викладача.
-![](task3_3.png)
+SELECT i.instructor_id, i.full_name, COUNT(DISTINCT e.student_id) AS students_count
+FROM instructors i
+JOIN courses c ON i.instructor_id = c.instructor_id
+JOIN enrollments e ON c.course_id = e.course_id
+GROUP BY i.instructor_id, i.full_name;
 
 ## **Задача 4. Аналітика прогресу**
 
