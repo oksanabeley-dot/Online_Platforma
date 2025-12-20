@@ -64,20 +64,30 @@ GROUP BY i.instructor_id, i.full_name;
 ## **Задача 4. Аналітика прогресу**
 
 1. Порахувати середню оцінку кожного студента.
-![](task4_1.png)
+SELECT s.student_id, s.full_name, AVG(p.score) AS average_score
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN progress p ON e.enrollment_id = p.enrollment_id
+GROUP BY s.student_id;
+
 2. Порахувати відсоток завершених уроків для кожного курсу.
-SELECT 
-    c.course_id,
-    c.course_name,
-    AVG(CASE WHEN sc.status = 'completed' THEN 1 ELSE 0 END) * 100.0 / COUNT(l.lesson_id) AS completion_percentage
-FROM 
-    courses c
-JOIN lessons l ON c.course_id = l.course_id
-LEFT JOIN student_courses sc ON c.course_id
+
+SELECT c.course_id, c.course_name,
+         COUNT(CASE WHEN p.completed = TRUE THEN 1 END) * 100.0 / COUNT(p.lesson_number) AS completion_percentage
+FROM courses c
+JOIN enrollments e ON c.course_id = e.course_id
+JOIN progress p ON e.enrollment_id = p.enrollment_id
+GROUP BY c.course_id;
 
 
 3. Знайти студентів, які завершили всі уроки у своїх курсах.
-
+SELECT s.student_id, s.full_name,
+         COUNT(CASE WHEN p.completed = TRUE THEN 1 END) * 100.0 / COUNT(p.lesson_number) AS completion_percentage
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN progress p ON e.enrollment_id = p.enrollment_id
+GROUP BY s.student_id
+HAVING COUNT(CASE WHEN p.completed = TRUE THEN 1 END) * 100.0 / COUNT(p.lesson_number) = 100;
 
 ## **Задача 5. Віконні функції**
 
